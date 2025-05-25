@@ -32,7 +32,3 @@ def modifyCurso(id, curso):
 def unableCurso(id):
     res = requests.delete(f"http://educate.runasp.net/api/curso/{id}")
     return res.status_code
-
-
-print(getCurso(13))
-print(unableCurso(13))

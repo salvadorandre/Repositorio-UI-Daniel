@@ -2,6 +2,7 @@ from customtkinter import *
 from tkinter import ttk
 from vistas.vistaEstudiante import desplegarEstudiantes
 from vistas.vistaProfesor import desplegarProfesores
+from vistas.vistaCurso import desplegarCursos
 
 set_default_color_theme("green")
 
@@ -14,7 +15,7 @@ def ver():
         case "Profesores":
             desplegarProfesores(app)
         case "Cursos":
-            print("Si")
+            desplegarCursos(app)
 
 
 app = CTk()
