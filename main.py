@@ -1,5 +1,4 @@
 from customtkinter import *
-from tkinter import ttk
 from vistas.vistaEstudiante import desplegarEstudiantes
 from vistas.vistaProfesor import desplegarProfesores
 from vistas.vistaCurso import desplegarCursos

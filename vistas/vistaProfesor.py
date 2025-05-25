@@ -135,7 +135,6 @@ def desplegarProfesores(padre: CTk):
     ventana.resizable(width=False, height=False)
     ventana.rowconfigure(0, weight=1)
     ventana.columnconfigure(1, weight=1)
-    padre.withdraw()
 
     try:
         frameTitulo = CTkFrame(ventana, height=75, fg_color="darkblue")
