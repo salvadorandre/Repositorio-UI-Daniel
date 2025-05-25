@@ -153,6 +153,7 @@ def actualizarVista(tabla:ttk.Treeview):
 
 def desplegarEstudiantes(padre: CTk):
     ventana = CTkToplevel(padre)
+    ventana.title("Vista de estudiantes")
     ventana.grab_set()
     ventana.resizable(width=False, height=False)
     ventana.rowconfigure(0, weight=1)
@@ -160,7 +161,7 @@ def desplegarEstudiantes(padre: CTk):
     padre.withdraw()
 
     try:
-        frameTitulo = CTkFrame(ventana, height=75)
+        frameTitulo = CTkFrame(ventana, height=75, fg_color="orange")
         frameBotones = CTkFrame(ventana)
         frameTabla = CTkFrame(ventana)
 

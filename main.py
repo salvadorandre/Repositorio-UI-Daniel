@@ -1,6 +1,7 @@
 from customtkinter import *
 from tkinter import ttk
 from vistas.vistaEstudiante import desplegarEstudiantes
+from vistas.vistaProfesor import desplegarProfesores
 
 set_default_color_theme("green")
 
@@ -11,7 +12,10 @@ def ver():
         case "Estudiantes":
             desplegarEstudiantes(app)
         case "Profesores":
-            print("Mostrando profesores")    
+            desplegarProfesores(app)
+        case "Cursos":
+            print("Si")
+
 
 app = CTk()
 app.title("Sistema de Gestion educativa")
@@ -22,7 +26,7 @@ app.columnconfigure(1, weight=1)
 
 titulo = CTkLabel(app, text="Gestion de Escuela", font=("Arial", 25, "bold"))
 
-listaEstudiantes = CTkComboBox(app, values=("Estudiantes", "Profesores"))
+listaEstudiantes = CTkComboBox(app, values=("Estudiantes", "Profesores", "Cursos"))
 boton = CTkButton(app, text="Abrir ventana", command=ver)
 
 
