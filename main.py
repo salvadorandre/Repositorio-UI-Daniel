@@ -2,6 +2,7 @@ from customtkinter import *
 from vistas.vistaEstudiante import desplegarEstudiantes
 from vistas.vistaProfesor import desplegarProfesores
 from vistas.vistaCurso import desplegarCursos
+from vistas.vistaAula import desplegarAulas
 
 set_default_color_theme("green")
 
@@ -15,6 +16,9 @@ def ver():
             desplegarProfesores(app)
         case "Cursos":
             desplegarCursos(app)
+
+def asignarProfesor():
+    desplegarAulas()
 
 
 app = CTk()

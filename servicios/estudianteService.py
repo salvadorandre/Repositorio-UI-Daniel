@@ -40,4 +40,3 @@ def modifyEstudiante(id, estudiante):
 def unableEstudiante(id):
     res = requests.delete(f"http://educate.runasp.net/api/estudiante/{id}")
     return res.status_code
-

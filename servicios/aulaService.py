@@ -35,3 +35,5 @@ def unableAula(id):
     res = requests.delete(f"http://educate.runasp.net/api/asignacionprofesor/{id}")
     return res.status_code
 
+
+
