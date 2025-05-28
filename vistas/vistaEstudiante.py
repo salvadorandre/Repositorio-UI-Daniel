@@ -133,9 +133,28 @@ def actualizarVista(tabla:ttk.Treeview, label: CTkLabel):
     try:
         res = getEstudianteById(id_seleccionado)
         asignacion = res["asignacion"]
-        label.configure(text = f"{asignacion}")
+
+        if asignacion and isinstance(asignacion, list):
+            texto = ""
+            for i, datos in enumerate(asignacion, start=1):
+                curso = datos.get("curso", "N/A")
+                profesor = datos.get("profesor", "N/A")
+                estado = "Activo" if datos.get("estado", False) else "Inactivo"
+
+                texto += f"Asignación {i}:\n"
+                texto += f"  Curso: {curso}\n"
+                texto += f"  Profesor: {profesor}\n"
+                texto += f"  Estado: {estado}\n\n"
+
+            label.configure(text=texto.strip())
+        else:
+            label.configure(text="No hay asignaciones disponibles")
     except:
-        label.configure(text = "Sin info, actualice por favor")
+        label.configure(text="Sin info, actualice por favor")
+
+
+
+        
 
     for item in tabla.get_children():
         tabla.delete(item)
@@ -174,7 +193,7 @@ def desplegarEstudiantes(padre: CTk):
         frameTitulo = CTkFrame(ventana, height=75, fg_color="orange")
         frameBotones = CTkFrame(ventana)
         frameTabla = CTkFrame(ventana)
-        frameInfo = CTkFrame(ventana)
+        frameInfo = CTkScrollableFrame(ventana)
 
         labelInfo = CTkLabel(frameInfo, text="Aqui ira info", wraplength=250)
         titulo = CTkLabel(frameTitulo, text="Modulo Estudiantes", font=("Arial", 15, "bold"))
