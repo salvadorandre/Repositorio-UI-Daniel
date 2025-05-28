@@ -99,7 +99,7 @@ def inhabilitar(tabla:ttk.Treeview):
     else:
         messagebox.showwarning("Error", "No se pudo eliminar nada")
 
-def actualizarVista(tabla:ttk.Treeview):
+def actualizarVista(tabla:ttk.Treeview, label:CTkLabel):
 
     # Guardar el ID del Profesor seleccionado
     seleccion = tabla.focus()
@@ -108,6 +108,37 @@ def actualizarVista(tabla:ttk.Treeview):
         valores = tabla.item(seleccion, "values")
         if valores:
             id_seleccionado = valores[0]  # El ID está en la primera columna
+
+    #Cargar lista al label info
+    try:
+        res = getProfesor(id_seleccionado)
+        lista_asignaciones = res["profesorCurso"]
+
+        if lista_asignaciones and isinstance(lista_asignaciones, list):
+            texto = ""
+            for i, asignacion in enumerate(lista_asignaciones, start=1):
+
+                id_asignacion = asignacion.get("idProfesorCurso", "N/A")
+                curso_info = asignacion.get("curso", {})
+                nombre_curso = curso_info.get("nombre", "N/A")
+
+                profesor = asignacion.get("profesor")
+                estado = "Activo" if asignacion.get("estado", False) else "Inactivo"
+
+                texto += f"Asignación {i}:\n"
+                texto += f"  ID Aula: {id_asignacion}\n"
+                texto += f"  Curso: {nombre_curso}\n"
+
+
+            label.configure(text=texto.strip())
+        else:
+            label.configure(text="No hay asignaciones disponibles")
+    except Exception as e:
+        label.configure(text="Sin info disponible")
+
+
+
+
 
     for item in tabla.get_children():
         tabla.delete(item)
@@ -140,12 +171,14 @@ def desplegarProfesores(padre: CTk):
         frameTitulo = CTkFrame(ventana, height=75, fg_color="darkblue")
         frameBotones = CTkFrame(ventana)
         frameTabla = CTkFrame(ventana)
+        frameInfo = CTkScrollableFrame(ventana)
 
+        labelInfo = CTkLabel(frameInfo, text="Aqui ira info", wraplength=250)
         titulo = CTkLabel(frameTitulo, text="Modulo Profesores", font=("Arial", 15, "bold"))
         btnCrear = CTkButton(frameBotones, text="Crear Profesor", command=lambda:crear(ventana, tabla))
         btnModificar = CTkButton(frameBotones, text="Modificar Profesor", command=lambda:modificar(ventana, tabla))
-        btnInhabilitar = CTkButton(frameBotones, text="Inhabilitar Profesor", command=lambda:(inhabilitar(tabla), actualizarVista(tabla)))
-        btnActualizar = CTkButton(frameBotones, text="Actualizar vista", command=lambda:actualizarVista(tabla))
+        btnInhabilitar = CTkButton(frameBotones, text="Inhabilitar Profesor", command=lambda:(inhabilitar(tabla), actualizarVista(tabla, labelInfo)))
+        btnActualizar = CTkButton(frameBotones, text="Actualizar vista", command=lambda:actualizarVista(tabla, labelInfo))
 
         columnas = ["idProfesor", "nombre", "edad", "capacidad", "estado"]
 
@@ -164,6 +197,7 @@ def desplegarProfesores(padre: CTk):
         frameTitulo.grid(column = 0, row = 0, columnspan = 2, pady = 10, padx = 10, sticky = "nsew")
         frameBotones.grid(column=0, row=1, pady = 10, padx = 10, sticky = "nsew")
         frameTabla.grid(column=1, row=1, pady = 10, padx = 10, sticky = "nsew")
+        frameInfo.grid(column =2, row=0, rowspan = 2, pady = 10, padx =10, sticky = "nsew")
 
         #Organizacion de botones y tabla
         titulo.grid(column = 0, row=0, sticky="nsew", padx=10, pady=10)
@@ -171,12 +205,13 @@ def desplegarProfesores(padre: CTk):
         btnModificar.grid(column = 0, row = 1, sticky="nsew", padx=10, pady=10)
         btnInhabilitar.grid(column = 0, row =2, sticky="nsew", padx=10, pady=10)
         btnActualizar.grid(column = 0, row = 3, sticky="nsew", padx=10, pady=10)
+        labelInfo.grid(column = 0, row = 0, padx = 5, pady = 5, sticky = "nsew")
 
         tabla.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
         scrollX.grid(row=1, column=0, sticky="ew")
         scrollY.grid(row=0, column=1, sticky="ns")
 
-        actualizarVista(tabla)
+        actualizarVista(tabla, labelInfo)
 
         ventana.protocol("WM_DELETE_WINDOW", lambda: al_cerrar(padre, ventana))
         ventana.wait_window()  # se detiene hasta que ventana se cierre

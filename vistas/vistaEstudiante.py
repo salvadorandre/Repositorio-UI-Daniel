@@ -199,7 +199,7 @@ def desplegarEstudiantes(padre: CTk):
         titulo = CTkLabel(frameTitulo, text="Modulo Estudiantes", font=("Arial", 15, "bold"))
         btnCrear = CTkButton(frameBotones, text="Crear estudiante", command=lambda:crear(ventana, tabla))
         btnModificar = CTkButton(frameBotones, text="Modificar estudiante", command=lambda:modificar(ventana, tabla))
-        btnInhabilitar = CTkButton(frameBotones, text="Inhabilitar estudiante", command=lambda:(inhabilitar(tabla), actualizarVista(tabla)))
+        btnInhabilitar = CTkButton(frameBotones, text="Inhabilitar estudiante", command=lambda:(inhabilitar(tabla), actualizarVista(tabla, labelInfo)))
         btnActualizar = CTkButton(frameBotones, text="Actualizar vista", command=lambda:actualizarVista(tabla, labelInfo))
         
 
