@@ -36,6 +36,3 @@ def modifyProfesor(id, profesor):
 def unableProfesor(id):
     res = requests.delete(f"http://educate.runasp.net/api/profesor/{id}")
     return res.status_code
-
-
-print(getProfesor(1))

@@ -1,2 +1,227 @@
-def desplegarAulas():
-    print("Hola")
+from customtkinter import *
+from tkinter import ttk
+from tkinter import messagebox
+from servicios.aulaService import *
+from servicios.cursoService import *
+from servicios.profesorService import *
+
+colorBase = "red"
+
+def al_cerrar(padre: CTk, ventana: CTkToplevel):
+    padre.wm_deiconify()
+    padre.lift()
+    padre.focus_force()
+    ventana.destroy()
+    
+def crear(padre: CTkToplevel, tabla:ttk.Treeview):
+    def enviar(tabla):
+
+        textoCurso = str(campoCurso.get()).split("-")
+        textoProfesor = str(campoProfesor.get()).split("-")
+
+        aula = {
+            "cursoId": int(textoCurso[0]),
+            "profesorId": int(textoProfesor[0]),
+            "estado": True
+        }
+        insertAula(aula)
+        try:
+            actualizarVista(tabla)
+        except:
+            print("Error actualizando")
+        messagebox.showinfo("Agregado", "Aula agregada exitosamente")
+
+    formCrear = CTkToplevel(padre)
+    formCrear.title("Crear Aula")
+    formCrear.lift()
+    formCrear.grab_set()
+    formCrear.focus_force()
+    
+    CTkLabel(formCrear, text="Profesor").grid(row=0, column=0)
+    CTkLabel(formCrear, text="Curso").grid(row=3, column=0)
+
+    #Obtener columnas
+    datos = getProfesores()
+    profesores = []
+
+    for dato in datos:
+        text = str(dato["idProfesor"]) + "-" + str(dato["nombre"])
+        profesores.append(text)
+
+
+    datos = getCursos()
+    cursos = []
+
+    for dato in datos:
+        text = str(dato["idCurso"]) + "-" + str(dato["nombre"])
+        cursos.append(text)
+
+
+    campoProfesor = CTkComboBox(formCrear, values=profesores)
+    campoProfesor.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
+
+    campoCurso = CTkComboBox(formCrear, values=cursos)
+    campoCurso.grid(row=3, column=1, padx=10, pady=10, sticky="nsew")
+
+    CTkButton(formCrear, text="Aceptar", command=lambda:(enviar(tabla), formCrear.destroy())).grid(row=5, column=0, columnspan=2, padx=10, pady=10, sticky="nsew")
+
+def modificar(padre: CTkToplevel, tabla:ttk.Treeview):
+    def enviar(tabla, id):
+        textoCurso = str(campoCurso.get()).split("-")
+        textoProfesor = str(campoProfesor.get()).split("-")
+
+        aula = {
+            "idProfesorCurso": id,
+            "cursoId": int(textoCurso[0]),
+            "profesorId": int(textoProfesor[0]),
+            "estado": True
+        }
+        modifyAula(id, aula)
+        try:
+            actualizarVista(tabla)
+        except:
+            print("Error actualizando")
+        messagebox.showinfo("Agregado", "Aula modificada exitosamente")
+
+    #Obtener el id
+    seleccion = tabla.selection()
+    valores = tabla.item(seleccion, "values")
+    id = valores[0]
+
+    formCrear = CTkToplevel(padre)
+    formCrear.title("Crear Aula")
+    formCrear.lift()
+    formCrear.grab_set()
+    formCrear.focus_force()
+    
+    CTkLabel(formCrear, text="Profesor").grid(row=0, column=0)
+    CTkLabel(formCrear, text="Curso").grid(row=3, column=0)
+
+    #Obtener columnas
+    datos = getProfesores()
+    profesores = []
+
+    for dato in datos:
+        text = str(dato["idProfesor"]) + "-" + str(dato["nombre"])
+        profesores.append(text)
+
+
+    datos = getCursos()
+    cursos = []
+
+    for dato in datos:
+        text = str(dato["idCurso"]) + "-" + str(dato["nombre"])
+        cursos.append(text)
+
+
+    campoProfesor = CTkComboBox(formCrear, values=profesores)
+    campoProfesor.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
+
+    campoCurso = CTkComboBox(formCrear, values=cursos)
+    campoCurso.grid(row=3, column=1, padx=10, pady=10, sticky="nsew")
+
+    CTkButton(formCrear, text="Aceptar", command=lambda:(enviar(tabla, id), formCrear.destroy())).grid(row=5, column=0, columnspan=2, padx=10, pady=10, sticky="nsew")
+
+
+def inhabilitar(tabla:ttk.Treeview):
+    seleccion = tabla.selection()
+    valores = tabla.item(seleccion, "values")
+    id = valores[0]
+
+    if unableAula(id) == 200:
+        messagebox.showinfo("Eliminado", "Aula eliminado correctamente")
+    else:
+        messagebox.showwarning("Error", "No se pudo eliminar nada")
+
+def actualizarVista(tabla:ttk.Treeview):
+
+    # Guardar el ID del Aula seleccionado
+    seleccion = tabla.focus()
+    id_seleccionado = None
+    if seleccion:
+        valores = tabla.item(seleccion, "values")
+        if valores:
+            id_seleccionado = valores[0]  # El ID está en la primera columna
+
+
+
+    for item in tabla.get_children():
+        tabla.delete(item)
+
+    datos = getAulas()
+    for dato in datos:
+        fila_id = tabla.insert("", "end", values=(dato["idProfesorCurso"], 
+                                        dato["curso"]["nombre"], 
+                                        dato["profesor"]["nombre"],
+                                        dato["estado"]))
+        # Si coincide el ID, guardar ese item para volver a enfocarlo
+        if str(dato["idProfesorCurso"]) == str(id_seleccionado):
+            nuevo_focus = fila_id
+        # Restaurar el enfoque y selección
+    if nuevo_focus:
+        tabla.focus(nuevo_focus)
+        tabla.selection_set(nuevo_focus)
+        tabla.see(nuevo_focus)
+
+def desplegarAulas(padre: CTk):
+    ventana = CTkToplevel(padre)
+    ventana.title("Vista de Aulaes")
+    ventana.grab_set()
+    ventana.resizable(width=False, height=False)
+    ventana.rowconfigure(0, weight=1)
+    ventana.columnconfigure(1, weight=1)
+
+    try:
+        frameTitulo = CTkFrame(ventana, height=75, fg_color="black")
+        frameBotones = CTkFrame(ventana)
+        frameTabla = CTkFrame(ventana)
+        frameInfo = CTkScrollableFrame(ventana)
+
+        labelInfo = CTkLabel(frameInfo, text="Aqui ira info", wraplength=250)
+        titulo = CTkLabel(frameTitulo, text="Modulo Aulas", font=("Arial", 15, "bold"))
+        btnCrear = CTkButton(frameBotones, text="Crear Aula", command=lambda:crear(ventana, tabla))
+        btnModificar = CTkButton(frameBotones, text="Modificar Aula", command=lambda:modificar(ventana, tabla))
+        btnInhabilitar = CTkButton(frameBotones, text="Inhabilitar Aula", command=lambda:(inhabilitar(tabla), actualizarVista(tabla)))
+        btnActualizar = CTkButton(frameBotones, text="Actualizar vista", command=lambda:actualizarVista(tabla))
+
+        columnas = ["idAula", "Curso", "Profesor"]
+
+        tabla = ttk.Treeview(frameTabla, columns= columnas, show="headings")
+        for col in columnas:
+            tabla.heading(col, text=col)
+            tabla.column(col, width=100, anchor="center")  # Ancho y alineación
+
+
+        #Configuracion de scrolls
+        scrollY = CTkScrollbar(frameTabla, orientation="vertical",command=tabla.yview)
+        scrollX = CTkScrollbar(frameTabla, orientation="horizontal", command=tabla.xview)
+        tabla.configure(yscrollcommand=scrollY.set, xscrollcommand=scrollX.set)
+
+        #Organizacion de Frames
+        frameTitulo.grid(column = 0, row = 0, columnspan = 2, pady = 10, padx = 10, sticky = "nsew")
+        frameBotones.grid(column=0, row=1, pady = 10, padx = 10, sticky = "nsew")
+        frameTabla.grid(column=1, row=1, pady = 10, padx = 10, sticky = "nsew")
+        frameInfo.grid(column =2, row=0, rowspan = 2, pady = 10, padx =10, sticky = "nsew")
+
+        #Organizacion de botones y tabla
+        titulo.grid(column = 0, row=0, sticky="nsew", padx=10, pady=10)
+        btnCrear.grid(column = 0, row = 0, sticky="nsew", padx=10, pady=10)
+        btnModificar.grid(column = 0, row = 1, sticky="nsew", padx=10, pady=10)
+        btnInhabilitar.grid(column = 0, row =2, sticky="nsew", padx=10, pady=10)
+        btnActualizar.grid(column = 0, row = 3, sticky="nsew", padx=10, pady=10)
+        labelInfo.grid(column = 0, row = 0, padx = 5, pady = 5, sticky = "nsew")
+
+        tabla.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
+        scrollX.grid(row=1, column=0, sticky="ew")
+        scrollY.grid(row=0, column=1, sticky="ns")
+
+        actualizarVista(tabla)
+
+        ventana.protocol("WM_DELETE_WINDOW", lambda: al_cerrar(padre, ventana))
+        ventana.wait_window()  # se detiene hasta que ventana se cierre
+    
+    finally:      
+        padre.wm_deiconify()
+        padre.lift()
+        padre.focus_force()
+

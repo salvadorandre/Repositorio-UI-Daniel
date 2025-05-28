@@ -18,7 +18,10 @@ def ver():
             desplegarCursos(app)
 
 def asignarProfesor():
-    desplegarAulas()
+    desplegarAulas(app)
+
+def asignarEstudiantes():
+    print("a")
 
 
 app = CTk()
@@ -34,9 +37,17 @@ listaEstudiantes = CTkComboBox(app, values=("Estudiantes", "Profesores", "Cursos
 boton = CTkButton(app, text="Abrir ventana", command=ver)
 
 
+btnAsignacionEst = CTkButton(app, text="Asignar Estudiantes", command=asignarEstudiantes)
+btnAsignacionProf = CTkButton(app, text="Asignar Aulas", command=asignarProfesor)
+
+
 titulo.grid(row = 0, column = 0, padx = 10, pady = 10, sticky = "nsew")
 listaEstudiantes.grid(row = 1, column = 0, padx = 10, pady = 10, sticky = "nsew")
 boton.grid(row = 2, column = 0, padx = 10, pady = 10, sticky = "nsew")
+
+btnAsignacionEst.grid(row = 1, column = 1, padx = 10, pady = 10, sticky = "nsew" )
+btnAsignacionProf.grid(row = 2, column = 1, padx = 10, pady = 10, sticky = "nsew" )
+
 
 
 app.mainloop()
