@@ -13,7 +13,7 @@ def al_cerrar(padre: CTk, ventana: CTkToplevel):
     padre.focus_force()
     ventana.destroy()
     
-def crear(padre: CTkToplevel, tabla:ttk.Treeview):
+def crear(padre: CTkToplevel, tabla:ttk.Treeview, label:CTkLabel):
     def enviar(tabla):
 
         textoCurso = str(campoCurso.get()).split("-")
@@ -26,7 +26,7 @@ def crear(padre: CTkToplevel, tabla:ttk.Treeview):
         }
         insertAula(aula)
         try:
-            actualizarVista(tabla)
+            actualizarVista(tabla, label)
         except:
             print("Error actualizando")
         messagebox.showinfo("Agregado", "Aula agregada exitosamente")
@@ -65,7 +65,7 @@ def crear(padre: CTkToplevel, tabla:ttk.Treeview):
 
     CTkButton(formCrear, text="Aceptar", command=lambda:(enviar(tabla), formCrear.destroy())).grid(row=5, column=0, columnspan=2, padx=10, pady=10, sticky="nsew")
 
-def modificar(padre: CTkToplevel, tabla:ttk.Treeview):
+def modificar(padre: CTkToplevel, tabla:ttk.Treeview, label:CTkLabel):
     def enviar(tabla, id):
         textoCurso = str(campoCurso.get()).split("-")
         textoProfesor = str(campoProfesor.get()).split("-")
@@ -78,7 +78,7 @@ def modificar(padre: CTkToplevel, tabla:ttk.Treeview):
         }
         modifyAula(id, aula)
         try:
-            actualizarVista(tabla)
+            actualizarVista(tabla, label)
         except:
             print("Error actualizando")
         messagebox.showinfo("Agregado", "Aula modificada exitosamente")
@@ -133,7 +133,7 @@ def inhabilitar(tabla:ttk.Treeview):
     else:
         messagebox.showwarning("Error", "No se pudo eliminar nada")
 
-def actualizarVista(tabla:ttk.Treeview):
+def actualizarVista(tabla:ttk.Treeview, label:CTkLabel):
 
     # Guardar el ID del Aula seleccionado
     seleccion = tabla.focus()
@@ -143,8 +143,16 @@ def actualizarVista(tabla:ttk.Treeview):
         if valores:
             id_seleccionado = valores[0]  # El ID está en la primera columna
 
+    id = int(id_seleccionado)
+    total = getTotalAula(id)
+
+    try:
+        label.configure(text=f"{total}")
+    except:
+        label.configure(text ="No hay informacion")
 
 
+    
     for item in tabla.get_children():
         tabla.delete(item)
 
@@ -181,8 +189,8 @@ def desplegarAulas(padre: CTk):
         titulo = CTkLabel(frameTitulo, text="Modulo Aulas", font=("Arial", 15, "bold"))
         btnCrear = CTkButton(frameBotones, text="Crear Aula", command=lambda:crear(ventana, tabla))
         btnModificar = CTkButton(frameBotones, text="Modificar Aula", command=lambda:modificar(ventana, tabla))
-        btnInhabilitar = CTkButton(frameBotones, text="Inhabilitar Aula", command=lambda:(inhabilitar(tabla), actualizarVista(tabla)))
-        btnActualizar = CTkButton(frameBotones, text="Actualizar vista", command=lambda:actualizarVista(tabla))
+        btnInhabilitar = CTkButton(frameBotones, text="Inhabilitar Aula", command=lambda:(inhabilitar(tabla), actualizarVista(tabla, labelInfo)))
+        btnActualizar = CTkButton(frameBotones, text="Actualizar vista", command=lambda:actualizarVista(tabla, labelInfo))
 
         columnas = ["idAula", "Curso", "Profesor"]
 
@@ -215,7 +223,7 @@ def desplegarAulas(padre: CTk):
         scrollX.grid(row=1, column=0, sticky="ew")
         scrollY.grid(row=0, column=1, sticky="ns")
 
-        actualizarVista(tabla)
+        actualizarVista(tabla, labelInfo)
 
         ventana.protocol("WM_DELETE_WINDOW", lambda: al_cerrar(padre, ventana))
         ventana.wait_window()  # se detiene hasta que ventana se cierre

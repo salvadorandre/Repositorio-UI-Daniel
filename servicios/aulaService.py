@@ -27,6 +27,14 @@ def getAula(id):
     res = requests.get(f"http://educate.runasp.net/api/asignacionprofesor/{id}")
     return res.json()
 
+def getTotalAula(id):
+    id_real = int(id)
+    res = requests.get(f"http://educate.runasp.net/api/ViewAula?activo=true")   
+    for curso in res.json():
+        if curso["idAula"] == id_real:
+            return curso["totalEstudiantes"]
+
+
 def modifyAula(id, profCurso):
     res = requests.put(f"http://educate.runasp.net/api/asignacionprofesor/{id}", json=profCurso)
     return res.status_code
@@ -34,6 +42,3 @@ def modifyAula(id, profCurso):
 def unableAula(id):
     res = requests.delete(f"http://educate.runasp.net/api/asignacionprofesor/{id}")
     return res.status_code
-
-
-

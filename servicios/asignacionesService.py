@@ -1,0 +1,40 @@
+import requests
+
+'''
+
+Para POST
+profCur = {"profesorId": 1,
+       "cursoId": 1,
+       "estado": True}
+
+       
+PARA PUT
+profCur = {"idProfesorCurso": 18,
+        "profesorId":1,
+        "cursoId":1,
+       "estado":True}
+'''
+
+def insertAsignacion(asignacion):
+    res = requests.post("http://educate.runasp.net/api/asignacion", json=asignacion)
+    return res.status_code
+
+def getAsignaciones():
+    res = requests.get("http://educate.runasp.net/api/asignacion")
+    return res.json()
+
+def getAsignacion(id):
+    res = requests.get(f"http://educate.runasp.net/api/asignacion/{id}")
+    return res.json()
+
+def modifyAsignacion(id, asignacion):
+    res = requests.put(f"http://educate.runasp.net/api/asignacion/{id}", json=asignacion)
+    return res.status_code
+
+def unableAsignacion(id):
+    res = requests.delete(f"http://educate.runasp.net/api/asignacion/{id}")
+    return res.status_code
+
+
+print(getAsignacion)
+
