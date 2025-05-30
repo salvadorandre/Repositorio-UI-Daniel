@@ -134,38 +134,45 @@ def inhabilitar(tabla:ttk.Treeview):
         messagebox.showwarning("Error", "No se pudo eliminar nada")
 
 def actualizarVista(tabla:ttk.Treeview, label:CTkLabel):
-
-    # Guardar el ID del Aula seleccionado
     seleccion = tabla.focus()
     id_seleccionado = None
+
+
+
     if seleccion:
         valores = tabla.item(seleccion, "values")
-        if valores:
-            id_seleccionado = valores[0]  # El ID está en la primera columna
+        if valores and len(valores) > 0 and valores[0]:  # Aseguramos que hay ID
+            try:
+                id_seleccionado = int(valores[0])
+            except Exception as e:
+                print(f"[ERROR] ID inválido: {valores[0]}. Excepción: {e}")
+                id_seleccionado = None
 
-    id = int(id_seleccionado)
-    total = getTotalAula(id)
-
-    try:
-        label.configure(text=f"{total}")
-    except:
-        label.configure(text ="No hay informacion")
+    if id_seleccionado is not None:
+        total = getTotalAula(id_seleccionado)
+        label.configure(text=f"Estudiantes asignados: {total}")
+    else:
+        label.configure(text="No hay información")
 
 
-    
+
+
     for item in tabla.get_children():
         tabla.delete(item)
 
     datos = getAulas()
+    nuevo_focus = None
+
     for dato in datos:
-        fila_id = tabla.insert("", "end", values=(dato["idProfesorCurso"], 
-                                        dato["curso"]["nombre"], 
-                                        dato["profesor"]["nombre"],
-                                        dato["estado"]))
-        # Si coincide el ID, guardar ese item para volver a enfocarlo
-        if str(dato["idProfesorCurso"]) == str(id_seleccionado):
+        fila_id = tabla.insert("", "end", values=(
+            dato["idProfesorCurso"], 
+            dato["curso"]["nombre"], 
+            dato["profesor"]["nombre"],
+            dato["estado"]
+        ))
+        if id_seleccionado is not None and dato["idProfesorCurso"] == id_seleccionado:
             nuevo_focus = fila_id
-        # Restaurar el enfoque y selección
+
     if nuevo_focus:
         tabla.focus(nuevo_focus)
         tabla.selection_set(nuevo_focus)

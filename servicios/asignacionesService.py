@@ -36,5 +36,3 @@ def unableAsignacion(id):
     return res.status_code
 
 
-print(getAsignacion)
-

@@ -28,7 +28,7 @@ def getAula(id):
     return res.json()
 
 def getTotalAula(id):
-    id_real = int(id)
+    id_real = id
     res = requests.get(f"http://educate.runasp.net/api/ViewAula?activo=true")   
     for curso in res.json():
         if curso["idAula"] == id_real:
