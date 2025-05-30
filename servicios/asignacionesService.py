@@ -3,16 +3,16 @@ import requests
 '''
 
 Para POST
-profCur = {"profesorId": 1,
-       "cursoId": 1,
+asig = {"estudianteId": 1,
+       "profesorCursoId": 1,
        "estado": True}
 
        
 PARA PUT
-profCur = {"idProfesorCurso": 18,
-        "profesorId":1,
-        "cursoId":1,
-       "estado":True}
+asig = {"idAsignacion":1,
+        "estudianteId": 1,
+       "profesorCursoId": 1,
+       "estado": True}
 '''
 
 def insertAsignacion(asignacion):
@@ -34,5 +34,7 @@ def modifyAsignacion(id, asignacion):
 def unableAsignacion(id):
     res = requests.delete(f"http://educate.runasp.net/api/asignacion/{id}")
     return res.status_code
+
+asig = {"estudianteId":2, "profesorCursoId": 1, "estado":True}
 
 

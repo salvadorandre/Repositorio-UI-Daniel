@@ -3,6 +3,7 @@ from vistas.vistaEstudiante import desplegarEstudiantes
 from vistas.vistaProfesor import desplegarProfesores
 from vistas.vistaCurso import desplegarCursos
 from vistas.vistaAula import desplegarAulas
+from vistas.vistaAsignaciones import desplegarAsignaciones
 
 set_default_color_theme("green")
 
@@ -21,7 +22,7 @@ def asignarProfesor():
     desplegarAulas(app)
 
 def asignarEstudiantes():
-    print("a")
+    desplegarAsignaciones(app)
 
 
 app = CTk()
