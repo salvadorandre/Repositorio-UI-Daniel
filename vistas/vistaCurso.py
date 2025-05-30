@@ -100,10 +100,14 @@ def actualizarVista(tabla:ttk.Treeview):
         if str(dato["idCurso"]) == str(id_seleccionado):
             nuevo_focus = fila_id
         # Restaurar el enfoque y selección
-    if nuevo_focus:
-        tabla.focus(nuevo_focus)
-        tabla.selection_set(nuevo_focus)
-        tabla.see(nuevo_focus)
+    try:
+        if nuevo_focus:
+            tabla.focus(nuevo_focus)
+            tabla.selection_set(nuevo_focus)
+            tabla.see(nuevo_focus)
+    
+    except:
+        print("Continuemos")
 
 def desplegarCursos(padre: CTk):
     ventana = CTkToplevel(padre)

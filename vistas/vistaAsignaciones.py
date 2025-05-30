@@ -1,7 +1,7 @@
 from customtkinter import *
 from tkinter import ttk
 from tkinter import messagebox
-from servicios.aulaService import *
+from servicios.asignacionesService import *
 from servicios.cursoService import *
 from servicios.profesorService import *
 
@@ -19,20 +19,20 @@ def crear(padre: CTkToplevel, tabla:ttk.Treeview, label:CTkLabel):
         textoCurso = str(campoCurso.get()).split("-")
         textoProfesor = str(campoProfesor.get()).split("-")
 
-        aula = {
+        asignacion = {
             "cursoId": int(textoCurso[0]),
             "profesorId": int(textoProfesor[0]),
             "estado": True
         }
-        insertAula(aula)
+        insertAsignacion(asignacion)
         try:
             actualizarVista(tabla, label)
         except:
             print("Error actualizando")
-        messagebox.showinfo("Agregado", "Aula agregada exitosamente")
+        messagebox.showinfo("Agregado", "asignacion agregada exitosamente")
 
     formCrear = CTkToplevel(padre)
-    formCrear.title("Crear Aula")
+    formCrear.title("Crear asignacion")
     formCrear.lift()
     formCrear.grab_set()
     formCrear.focus_force()
@@ -70,18 +70,18 @@ def modificar(padre: CTkToplevel, tabla:ttk.Treeview, label:CTkLabel):
         textoCurso = str(campoCurso.get()).split("-")
         textoProfesor = str(campoProfesor.get()).split("-")
 
-        aula = {
+        asignacion = {
             "idProfesorCurso": id,
             "cursoId": int(textoCurso[0]),
             "profesorId": int(textoProfesor[0]),
             "estado": True
         }
-        modifyAula(id, aula)
+        modifyAsignacion(id, asignacion)
         try:
             actualizarVista(tabla, label)
         except:
             print("Error actualizando")
-        messagebox.showinfo("Agregado", "Aula modificada exitosamente")
+        messagebox.showinfo("Agregado", "asignacion modificada exitosamente")
 
     #Obtener el id
     seleccion = tabla.selection()
@@ -89,7 +89,7 @@ def modificar(padre: CTkToplevel, tabla:ttk.Treeview, label:CTkLabel):
     id = valores[0]
 
     formCrear = CTkToplevel(padre)
-    formCrear.title("Crear Aula")
+    formCrear.title("Crear asignacion")
     formCrear.lift()
     formCrear.grab_set()
     formCrear.focus_force()
@@ -128,8 +128,8 @@ def inhabilitar(tabla:ttk.Treeview):
     valores = tabla.item(seleccion, "values")
     id = valores[0]
 
-    if unableAula(id) == 200:
-        messagebox.showinfo("Eliminado", "Aula eliminado correctamente")
+    if unableAsignacion(id) == 200:
+        messagebox.showinfo("Eliminado", "asignacion eliminado correctamente")
     else:
         messagebox.showwarning("Error", "No se pudo eliminar nada")
 
@@ -148,19 +148,10 @@ def actualizarVista(tabla:ttk.Treeview, label:CTkLabel):
                 print(f"[ERROR] ID inválido: {valores[0]}. Excepción: {e}")
                 id_seleccionado = None
 
-    if id_seleccionado is not None:
-        total = getTotalAula(id_seleccionado)
-        label.configure(text=f"Estudiantes asignados: {total}")
-    else:
-        label.configure(text="No hay información")
-
-
-
-
     for item in tabla.get_children():
         tabla.delete(item)
 
-    datos = getAulas()
+    datos = getAsignaciones()
     nuevo_focus = None
 
     for dato in datos:
@@ -173,18 +164,14 @@ def actualizarVista(tabla:ttk.Treeview, label:CTkLabel):
         if id_seleccionado is not None and dato["idProfesorCurso"] == id_seleccionado:
             nuevo_focus = fila_id
 
-    try:
-        if nuevo_focus:
-            tabla.focus(nuevo_focus)
-            tabla.selection_set(nuevo_focus)
-            tabla.see(nuevo_focus)
-    
-    except:
-        print("Continuemos")
+    if nuevo_focus:
+        tabla.focus(nuevo_focus)
+        tabla.selection_set(nuevo_focus)
+        tabla.see(nuevo_focus)
 
-def desplegarAulas(padre: CTk):
+def desplegarasignacions(padre: CTk):
     ventana = CTkToplevel(padre)
-    ventana.title("Vista de Aulaes")
+    ventana.title("Vista de asignaciones")
     ventana.grab_set()
     ventana.resizable(width=False, height=False)
     ventana.rowconfigure(0, weight=1)
@@ -197,13 +184,13 @@ def desplegarAulas(padre: CTk):
         frameInfo = CTkScrollableFrame(ventana)
 
         labelInfo = CTkLabel(frameInfo, text="Aqui ira info", wraplength=250)
-        titulo = CTkLabel(frameTitulo, text="Modulo Aulas", font=("Arial", 15, "bold"))
-        btnCrear = CTkButton(frameBotones, text="Crear Aula", command=lambda:crear(ventana, tabla, labelInfo))
-        btnModificar = CTkButton(frameBotones, text="Modificar Aula", command=lambda:modificar(ventana, tabla, labelInfo))
-        btnInhabilitar = CTkButton(frameBotones, text="Inhabilitar Aula", command=lambda:(inhabilitar(tabla), actualizarVista(tabla, labelInfo)))
+        titulo = CTkLabel(frameTitulo, text="Modulo asignacions", font=("Arial", 15, "bold"))
+        btnCrear = CTkButton(frameBotones, text="Crear asignacion", command=lambda:crear(ventana, tabla))
+        btnModificar = CTkButton(frameBotones, text="Modificar asignacion", command=lambda:modificar(ventana, tabla))
+        btnInhabilitar = CTkButton(frameBotones, text="Inhabilitar asignacion", command=lambda:(inhabilitar(tabla), actualizarVista(tabla, labelInfo)))
         btnActualizar = CTkButton(frameBotones, text="Actualizar vista", command=lambda:actualizarVista(tabla, labelInfo))
 
-        columnas = ["idAula", "Curso", "Profesor"]
+        columnas = ["idasignacion", "Curso", "Profesor"]
 
         tabla = ttk.Treeview(frameTabla, columns= columnas, show="headings")
         for col in columnas:
