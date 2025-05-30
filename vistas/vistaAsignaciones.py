@@ -69,21 +69,22 @@ def crear(padre: CTkToplevel, tabla:ttk.Treeview):
 
 def modificar(padre: CTkToplevel, tabla:ttk.Treeview):
     def enviar(tabla, id):
-        textoCurso = str(campoCurso.get()).split("-")
-        textoProfesor = str(campoProfesor.get()).split("-")
+
+        textoEstudiante = str(campoEstudiante.get()).split("-")
+        textoAula = str(campoAula.get()).split("-")
 
         asignacion = {
-            "idProfesorCurso": id,
-            "cursoId": int(textoCurso[0]),
-            "profesorId": int(textoProfesor[0]),
+            "idAsignacion": int(id),
+            "estudianteId": int(textoEstudiante[0]),
+            "profesorCursoId": int(textoAula[0]),
             "estado": True
         }
         modifyAsignacion(id, asignacion)
         try:
             actualizarVista(tabla)
-        except:
-            print("Error actualizando")
-        messagebox.showinfo("Agregado", "asignacion modificada exitosamente")
+        except Exception as e:
+            f"[ERROR] No se pudo actualizar la tabla: {e}"
+        messagebox.showinfo("Agregado", "Asignacion modificada exitosamente")
 
     #Obtener el id
     seleccion = tabla.selection()
@@ -96,31 +97,31 @@ def modificar(padre: CTkToplevel, tabla:ttk.Treeview):
     formCrear.grab_set()
     formCrear.focus_force()
     
-    CTkLabel(formCrear, text="Profesor").grid(row=0, column=0)
-    CTkLabel(formCrear, text="Curso").grid(row=3, column=0)
+    CTkLabel(formCrear, text="Estudiante").grid(row=0, column=0)
+    CTkLabel(formCrear, text="Aula").grid(row=3, column=0)
 
     #Obtener columnas
-    datos = getProfesores()
-    profesores = []
+    datos = getEstudiantes()
+    estudiantes = []
 
     for dato in datos:
-        text = str(dato["idProfesor"]) + "-" + str(dato["nombre"])
-        profesores.append(text)
+        text = str(dato["idEstudiante"]) + "-" + str(dato["nombre"])
+        estudiantes.append(text)
 
 
-    datos = getCursos()
-    cursos = []
+    datos = getAulas()
+    aulas = []
 
     for dato in datos:
-        text = str(dato["idCurso"]) + "-" + str(dato["nombre"])
-        cursos.append(text)
+        text = str(dato["idProfesorCurso"]) + "-" + str(dato["profesor"]["nombre"] + "-" + str(dato["curso"]["nombre"]))
+        aulas.append(text)
 
 
-    campoProfesor = CTkComboBox(formCrear, values=profesores)
-    campoProfesor.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
+    campoEstudiante = CTkComboBox(formCrear, values=estudiantes)
+    campoEstudiante.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
 
-    campoCurso = CTkComboBox(formCrear, values=cursos)
-    campoCurso.grid(row=3, column=1, padx=10, pady=10, sticky="nsew")
+    campoAula = CTkComboBox(formCrear, values=aulas)
+    campoAula.grid(row=3, column=1, padx=10, pady=10, sticky="nsew")
 
     CTkButton(formCrear, text="Aceptar", command=lambda:(enviar(tabla, id), formCrear.destroy())).grid(row=5, column=0, columnspan=2, padx=10, pady=10, sticky="nsew")
 
@@ -138,8 +139,6 @@ def actualizarVista(tabla:ttk.Treeview):
     seleccion = tabla.focus()
     id_seleccionado = None
 
-
-
     if seleccion:
         valores = tabla.item(seleccion, "values")
         if valores and len(valores) > 0 and valores[0]:  # Aseguramos que hay ID
@@ -149,10 +148,9 @@ def actualizarVista(tabla:ttk.Treeview):
                 print(f"[ERROR] ID inválido: {valores[0]}. Excepción: {e}")
                 id_seleccionado = None
 
-
-
     for item in tabla.get_children():
         tabla.delete(item)
+
 
     datos = getAsignaciones()
     nuevo_focus = None
@@ -165,7 +163,7 @@ def actualizarVista(tabla:ttk.Treeview):
             dato["curso"]["nombre"],
             dato["profesor"]["nombre"]
         ))
-        if id_seleccionado is not None and dato["idProfesorCurso"] == id_seleccionado:
+        if id_seleccionado is not None and dato["idAsignacion"] == id_seleccionado:
             nuevo_focus = fila_id
 
     try:
