@@ -6,51 +6,71 @@ from vistas.vistaAula import desplegarAulas
 from vistas.vistaAsignaciones import desplegarAsignaciones
 from vistas.vistaReportes import desplegarReportes
 
-set_default_color_theme("green")
+set_default_color_theme("blue")
 
-def ver():
-    valor = listaEstudiantes.get()
-
+def ver(opcion):
+    valor = opcion
+    print(opcion)
+    limpiarFrame()
     match valor:
         case "Estudiantes":
-            desplegarEstudiantes(app)
+            desplegarEstudiantes(frameTabla)
         case "Profesores":
-            desplegarProfesores(app)
+            desplegarProfesores(frameTabla)
         case "Cursos":
-            desplegarCursos(app)
+            desplegarCursos(frameTabla)
+
+def limpiarFrame():
+    for widget in frameTabla.winfo_children():
+        widget.destroy()
 
 def asignarProfesor():
-    desplegarAulas(app)
+    limpiarFrame()
+    desplegarAulas(frameTabla)
 
 def asignarEstudiantes():
-    desplegarAsignaciones(app)
+    limpiarFrame()
+    desplegarAsignaciones(frameTabla)
 
+def cambiarTema():
+    valor = switchApariencia.get()
+    if(valor == 1):
+        set_appearance_mode("dark")
+    else:
+        set_appearance_mode("light")
 
 app = CTk()
 app.title("Sistema de Gestion educativa")
-
+app.resizable(width=False, height=False)
 
 app.rowconfigure(0, weight=1)
 app.columnconfigure(1, weight=1)
 
+
+frameTabla = CTkFrame(app)
+
 titulo = CTkLabel(app, text="Gestion de Escuela", font=("Arial", 25, "bold"))
 
-listaEstudiantes = CTkComboBox(app, values=("Estudiantes", "Profesores", "Cursos"))
-boton = CTkButton(app, text="Abrir ventana", command=ver)
-
+listaEstudiantes = CTkComboBox(app, values=("Estudiantes", "Profesores", "Cursos"), command=ver)
 
 btnAsignacionEst = CTkButton(app, text="Asignar Estudiantes", command=asignarEstudiantes)
 btnAsignacionProf = CTkButton(app, text="Asignar Aulas", command=asignarProfesor)
-
 btnReportes = CTkButton(app, text="Generar reportes", command=lambda:desplegarReportes(app))
-btnReportes.grid(row = 0, column = 1, padx = 10, pady = 10, sticky = "nsew")
 
-titulo.grid(row = 0, column = 0, padx = 10, pady = 10, sticky = "nsew")
-listaEstudiantes.grid(row = 1, column = 0, padx = 10, pady = 10, sticky = "nsew")
-boton.grid(row = 2, column = 0, padx = 10, pady = 10, sticky = "nsew")
+switchApariencia = CTkSwitch(app, text="Modo oscuro",command=cambiarTema)
 
-btnAsignacionEst.grid(row = 1, column = 1, padx = 10, pady = 10, sticky = "nsew" )
-btnAsignacionProf.grid(row = 2, column = 1, padx = 10, pady = 10, sticky = "nsew" )
+
+titulo.grid(row = 0, column = 0, padx = 10, pady = 10)
+listaEstudiantes.grid(row = 2, column = 0, padx = 10, pady = 10, sticky = "nsew")
+
+btnAsignacionEst.grid(row = 4, column = 0, padx = 10, pady = 10, sticky = "nsew" )
+btnAsignacionProf.grid(row = 5, column = 0, padx = 10, pady = 10, sticky = "nsew" )
+
+btnReportes.grid(row = 6, column = 0, padx = 10, pady = 10, sticky = "nsew")
+
+frameTabla.grid(row = 0, column = 1, rowspan = 8, pady=10, padx=10, sticky = "nsew")
+
+switchApariencia.grid(row=7, column = 0, sticky = "nsew")
 
 
 

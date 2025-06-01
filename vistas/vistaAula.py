@@ -4,16 +4,11 @@ from tkinter import messagebox
 from servicios.aulaService import *
 from servicios.cursoService import *
 from servicios.profesorService import *
+from PIL import Image
 
 colorBase = "red"
-
-def al_cerrar(padre: CTk, ventana: CTkToplevel):
-    padre.wm_deiconify()
-    padre.lift()
-    padre.focus_force()
-    ventana.destroy()
     
-def crear(padre: CTkToplevel, tabla:ttk.Treeview, label:CTkLabel):
+def crear(padre: CTkFrame, tabla:ttk.Treeview, label:CTkLabel):
     def enviar(tabla):
 
         textoCurso = str(campoCurso.get()).split("-")
@@ -65,7 +60,7 @@ def crear(padre: CTkToplevel, tabla:ttk.Treeview, label:CTkLabel):
 
     CTkButton(formCrear, text="Aceptar", command=lambda:(enviar(tabla), formCrear.destroy())).grid(row=5, column=0, columnspan=2, padx=10, pady=10, sticky="nsew")
 
-def modificar(padre: CTkToplevel, tabla:ttk.Treeview, label:CTkLabel):
+def modificar(padre: CTkFrame, tabla:ttk.Treeview, label:CTkLabel):
     def enviar(tabla, id):
         textoCurso = str(campoCurso.get()).split("-")
         textoProfesor = str(campoProfesor.get()).split("-")
@@ -121,7 +116,6 @@ def modificar(padre: CTkToplevel, tabla:ttk.Treeview, label:CTkLabel):
     campoCurso.grid(row=3, column=1, padx=10, pady=10, sticky="nsew")
 
     CTkButton(formCrear, text="Aceptar", command=lambda:(enviar(tabla, id), formCrear.destroy())).grid(row=5, column=0, columnspan=2, padx=10, pady=10, sticky="nsew")
-
 
 def inhabilitar(tabla:ttk.Treeview):
     seleccion = tabla.selection()
@@ -182,65 +176,66 @@ def actualizarVista(tabla:ttk.Treeview, label:CTkLabel):
     except:
         print("Continuemos")
 
-def desplegarAulas(padre: CTk):
-    ventana = CTkToplevel(padre)
-    ventana.title("Vista de Aulaes")
-    ventana.grab_set()
-    ventana.resizable(width=False, height=False)
+def desplegarAulas(padre: CTkFrame):
+
+    imagenCrear = Image.open("assets/archivo-de-edicion.png")
+    imagenModificar = Image.open("assets/pinza-para-boligrafo.png")
+    imagenEliminar = Image.open("assets/basura.png")
+    imagenActualizar = Image.open("assets/actualizar.png")
+
+    icono1 = CTkImage(dark_image=imagenCrear, size=(20, 20))
+    icono2 = CTkImage(dark_image=imagenModificar, size=(20, 20))
+    icono3 = CTkImage(dark_image=imagenEliminar, size=(20, 20))
+    icono4 = CTkImage(dark_image=imagenActualizar, size=(20, 20))
+
+
+    ventana = CTkFrame(padre)
     ventana.rowconfigure(0, weight=1)
     ventana.columnconfigure(1, weight=1)
 
-    try:
-        frameTitulo = CTkFrame(ventana, height=75, fg_color="black")
-        frameBotones = CTkFrame(ventana)
-        frameTabla = CTkFrame(ventana)
-        frameInfo = CTkScrollableFrame(ventana)
+    frameTitulo = CTkFrame(ventana, height=75, fg_color="black")
+    frameBotones = CTkFrame(ventana)
+    frameTabla = CTkFrame(ventana)
+    frameInfo = CTkScrollableFrame(ventana)
 
-        labelInfo = CTkLabel(frameInfo, text="Aqui ira info", wraplength=250)
-        titulo = CTkLabel(frameTitulo, text="Modulo Aulas", font=("Arial", 15, "bold"))
-        btnCrear = CTkButton(frameBotones, text="Crear Aula", command=lambda:crear(ventana, tabla, labelInfo))
-        btnModificar = CTkButton(frameBotones, text="Modificar Aula", command=lambda:modificar(ventana, tabla, labelInfo))
-        btnInhabilitar = CTkButton(frameBotones, text="Inhabilitar Aula", command=lambda:(inhabilitar(tabla), actualizarVista(tabla, labelInfo)))
-        btnActualizar = CTkButton(frameBotones, text="Actualizar vista", command=lambda:actualizarVista(tabla, labelInfo))
+    labelInfo = CTkLabel(frameInfo, text="Aqui ira info", wraplength=250)
+    titulo = CTkLabel(frameTitulo, text="Modulo Aulas", font=("Arial", 15, "bold"))
+    btnCrear = CTkButton(frameBotones, text="", image=icono1, compound="left", command=lambda:crear(ventana, tabla, labelInfo))
+    btnModificar = CTkButton(frameBotones, text="", image=icono2, compound="left", command=lambda:modificar(ventana, tabla, labelInfo))
+    btnInhabilitar = CTkButton(frameBotones, text="", image=icono3, compound="left", command=lambda:(inhabilitar(tabla), actualizarVista(tabla, labelInfo)))
+    btnActualizar = CTkButton(frameBotones, text="", image=icono4, compound="left", command=lambda:actualizarVista(tabla, labelInfo))
 
-        columnas = ["idAula", "Curso", "Profesor"]
+    columnas = ["idAula", "Curso", "Profesor"]
 
-        tabla = ttk.Treeview(frameTabla, columns= columnas, show="headings")
-        for col in columnas:
-            tabla.heading(col, text=col)
-            tabla.column(col, width=200, anchor="center")  # Ancho y alineación
+    tabla = ttk.Treeview(frameTabla, columns= columnas, show="headings")
+    for col in columnas:
+        tabla.heading(col, text=col)
+        tabla.column(col, width=100, anchor="center")  # Ancho y alineación
 
 
-        #Configuracion de scrolls
-        scrollY = CTkScrollbar(frameTabla, orientation="vertical",command=tabla.yview)
-        scrollX = CTkScrollbar(frameTabla, orientation="horizontal", command=tabla.xview)
-        tabla.configure(yscrollcommand=scrollY.set, xscrollcommand=scrollX.set)
+    #Configuracion de scrolls
+    scrollY = CTkScrollbar(frameTabla, orientation="vertical",command=tabla.yview)
+    scrollX = CTkScrollbar(frameTabla, orientation="horizontal", command=tabla.xview)
+    tabla.configure(yscrollcommand=scrollY.set, xscrollcommand=scrollX.set)
 
-        #Organizacion de Frames
-        frameTitulo.grid(column = 0, row = 0, columnspan = 2, pady = 10, padx = 10, sticky = "nsew")
-        frameBotones.grid(column=0, row=1, pady = 10, padx = 10, sticky = "nsew")
-        frameTabla.grid(column=1, row=1, pady = 10, padx = 10, sticky = "nsew")
-        frameInfo.grid(column =2, row=0, rowspan = 2, pady = 10, padx =10, sticky = "nsew")
+    #Organizacion de Frames
+    frameTitulo.grid(column = 0, row = 0, columnspan = 2, pady = 10, padx = 10, sticky = "nsew")
+    frameBotones.grid(column=0, row=1, pady = 10, padx = 10, sticky = "nsew")
+    frameTabla.grid(column=1, row=1, pady = 10, padx = 10, sticky = "nsew")
+    frameInfo.grid(column =2, row=0, rowspan = 2, pady = 10, padx =10, sticky = "nsew")
 
-        #Organizacion de botones y tabla
-        titulo.grid(column = 0, row=0, sticky="nsew", padx=10, pady=10)
-        btnCrear.grid(column = 0, row = 0, sticky="nsew", padx=10, pady=10)
-        btnModificar.grid(column = 0, row = 1, sticky="nsew", padx=10, pady=10)
-        btnInhabilitar.grid(column = 0, row =2, sticky="nsew", padx=10, pady=10)
-        btnActualizar.grid(column = 0, row = 3, sticky="nsew", padx=10, pady=10)
-        labelInfo.grid(column = 0, row = 0, padx = 5, pady = 5, sticky = "nsew")
+    #Organizacion de botones y tabla
+    titulo.grid(column = 0, row=0, sticky="nsew", padx=10, pady=10)
+    btnCrear.grid(column = 0, row = 0, sticky="nsew", padx=10, pady=10)
+    btnModificar.grid(column = 0, row = 1, sticky="nsew", padx=10, pady=10)
+    btnInhabilitar.grid(column = 0, row =2, sticky="nsew", padx=10, pady=10)
+    btnActualizar.grid(column = 0, row = 3, sticky="nsew", padx=10, pady=10)
+    labelInfo.grid(column = 0, row = 0, padx = 5, pady = 5, sticky = "nsew")
 
-        tabla.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
-        scrollX.grid(row=1, column=0, sticky="ew")
-        scrollY.grid(row=0, column=1, sticky="ns")
+    tabla.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
+    scrollX.grid(row=1, column=0, sticky="ew")
+    scrollY.grid(row=0, column=1, sticky="ns")
 
-        actualizarVista(tabla, labelInfo)
-
-        ventana.protocol("WM_DELETE_WINDOW", lambda: al_cerrar(padre, ventana))
-        ventana.wait_window()  # se detiene hasta que ventana se cierre
-    
-    finally:      
-        padre.wm_deiconify()
-        padre.lift()
-        padre.focus_force()
+    actualizarVista(tabla, labelInfo)
+    ventana.grid(row=0, column=0, sticky="nsew")  # o pack(), si preferís
 
