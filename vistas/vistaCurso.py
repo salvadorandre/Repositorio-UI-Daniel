@@ -100,10 +100,14 @@ def actualizarVista(tabla:ttk.Treeview):
         if str(dato["idCurso"]) == str(id_seleccionado):
             nuevo_focus = fila_id
         # Restaurar el enfoque y selección
-    if nuevo_focus:
-        tabla.focus(nuevo_focus)
-        tabla.selection_set(nuevo_focus)
-        tabla.see(nuevo_focus)
+    try:
+        if nuevo_focus:
+            tabla.focus(nuevo_focus)
+            tabla.selection_set(nuevo_focus)
+            tabla.see(nuevo_focus)
+    
+    except:
+        print("Continuemos")
 
 def desplegarCursos(padre: CTk):
     ventana = CTkToplevel(padre)
@@ -129,7 +133,7 @@ def desplegarCursos(padre: CTk):
         tabla = ttk.Treeview(frameTabla, columns= columnas, show="headings")
         for col in columnas:
             tabla.heading(col, text=col)
-            tabla.column(col, width=100, anchor="center")  # Ancho y alineación
+            tabla.column(col, width=200, anchor="center")  # Ancho y alineación
 
 
         #Configuracion de scrolls

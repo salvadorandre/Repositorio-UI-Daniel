@@ -3,6 +3,8 @@ from vistas.vistaEstudiante import desplegarEstudiantes
 from vistas.vistaProfesor import desplegarProfesores
 from vistas.vistaCurso import desplegarCursos
 from vistas.vistaAula import desplegarAulas
+from vistas.vistaAsignaciones import desplegarAsignaciones
+from vistas.vistaReportes import desplegarReportes
 
 set_default_color_theme("green")
 
@@ -21,7 +23,7 @@ def asignarProfesor():
     desplegarAulas(app)
 
 def asignarEstudiantes():
-    print("a")
+    desplegarAsignaciones(app)
 
 
 app = CTk()
@@ -40,6 +42,8 @@ boton = CTkButton(app, text="Abrir ventana", command=ver)
 btnAsignacionEst = CTkButton(app, text="Asignar Estudiantes", command=asignarEstudiantes)
 btnAsignacionProf = CTkButton(app, text="Asignar Aulas", command=asignarProfesor)
 
+btnReportes = CTkButton(app, text="Generar reportes", command=lambda:desplegarReportes(app))
+btnReportes.grid(row = 0, column = 1, padx = 10, pady = 10, sticky = "nsew")
 
 titulo.grid(row = 0, column = 0, padx = 10, pady = 10, sticky = "nsew")
 listaEstudiantes.grid(row = 1, column = 0, padx = 10, pady = 10, sticky = "nsew")

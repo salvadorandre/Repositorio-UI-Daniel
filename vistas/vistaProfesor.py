@@ -11,7 +11,7 @@ def al_cerrar(padre: CTk, ventana: CTkToplevel):
     padre.focus_force()
     ventana.destroy()
     
-def crear(padre: CTkToplevel, tabla:ttk.Treeview):
+def crear(padre: CTkToplevel, tabla:ttk.Treeview, label:CTkLabel):
     def enviar(tabla):
         est = {
             "nombre": campoNombre.get(),
@@ -21,7 +21,7 @@ def crear(padre: CTkToplevel, tabla:ttk.Treeview):
         }
         insertProfesor(est)
         try:
-            actualizarVista(tabla)
+            actualizarVista(tabla, label)
         except:
             print("Error actualizando")
         messagebox.showinfo("Agregado", "Profesor agregado exitosamente")
@@ -47,7 +47,7 @@ def crear(padre: CTkToplevel, tabla:ttk.Treeview):
 
     CTkButton(formCrear, text="Aceptar", command=lambda:(enviar(tabla), formCrear.destroy())).grid(row=5, column=0, columnspan=2, padx=10, pady=10, sticky="nsew")
 
-def modificar(padre: CTkToplevel, tabla:ttk.Treeview):
+def modificar(padre: CTkToplevel, tabla:ttk.Treeview, label:CTkLabel):
     def enviar(tabla, id):
         est = {
             "idProfesor": int(id),
@@ -58,7 +58,7 @@ def modificar(padre: CTkToplevel, tabla:ttk.Treeview):
         }
         modifyProfesor(id, est)
         try:
-            actualizarVista(tabla)
+            actualizarVista(tabla, label)
         except:
             print("Error actualizando")
         messagebox.showinfo("Agregado", "Profesor modificado exitosamente")
@@ -154,10 +154,14 @@ def actualizarVista(tabla:ttk.Treeview, label:CTkLabel):
         if str(dato["idProfesor"]) == str(id_seleccionado):
             nuevo_focus = fila_id
         # Restaurar el enfoque y selección
-    if nuevo_focus:
-        tabla.focus(nuevo_focus)
-        tabla.selection_set(nuevo_focus)
-        tabla.see(nuevo_focus)
+    try:
+        if nuevo_focus:
+            tabla.focus(nuevo_focus)
+            tabla.selection_set(nuevo_focus)
+            tabla.see(nuevo_focus)
+    
+    except:
+        print("Continuemos")
 
 def desplegarProfesores(padre: CTk):
     ventana = CTkToplevel(padre)
@@ -175,8 +179,8 @@ def desplegarProfesores(padre: CTk):
 
         labelInfo = CTkLabel(frameInfo, text="Aqui ira info", wraplength=250)
         titulo = CTkLabel(frameTitulo, text="Modulo Profesores", font=("Arial", 15, "bold"))
-        btnCrear = CTkButton(frameBotones, text="Crear Profesor", command=lambda:crear(ventana, tabla))
-        btnModificar = CTkButton(frameBotones, text="Modificar Profesor", command=lambda:modificar(ventana, tabla))
+        btnCrear = CTkButton(frameBotones, text="Crear Profesor", command=lambda:crear(ventana, tabla, labelInfo))
+        btnModificar = CTkButton(frameBotones, text="Modificar Profesor", command=lambda:modificar(ventana, tabla, labelInfo))
         btnInhabilitar = CTkButton(frameBotones, text="Inhabilitar Profesor", command=lambda:(inhabilitar(tabla), actualizarVista(tabla, labelInfo)))
         btnActualizar = CTkButton(frameBotones, text="Actualizar vista", command=lambda:actualizarVista(tabla, labelInfo))
 
@@ -185,7 +189,7 @@ def desplegarProfesores(padre: CTk):
         tabla = ttk.Treeview(frameTabla, columns= columnas, show="headings")
         for col in columnas:
             tabla.heading(col, text=col)
-            tabla.column(col, width=100, anchor="center")  # Ancho y alineación
+            tabla.column(col, width=120, anchor="center")  # Ancho y alineación
 
 
         #Configuracion de scrolls

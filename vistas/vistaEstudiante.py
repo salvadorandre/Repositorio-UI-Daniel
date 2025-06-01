@@ -11,7 +11,7 @@ def al_cerrar(padre: CTk, ventana: CTkToplevel):
     ventana.grab_release()
     ventana.destroy()
     
-def crear(padre: CTkToplevel, tabla:ttk.Treeview):
+def crear(padre: CTkToplevel, tabla:ttk.Treeview, label:CTkLabel):
     def enviar(tabla):
         est = {
             "nombre": campoNombre.get(),
@@ -23,7 +23,7 @@ def crear(padre: CTkToplevel, tabla:ttk.Treeview):
         }
         insertEstudiante(est)
         try:
-            actualizarVista(tabla)
+            actualizarVista(tabla, label)
         except:
             print("Error actualizando")
         print("Si salio")
@@ -57,7 +57,7 @@ def crear(padre: CTkToplevel, tabla:ttk.Treeview):
 
     CTkButton(formCrear, text="Aceptar", command=lambda:(enviar(tabla), formCrear.destroy())).grid(row=5, column=0, columnspan=2, padx=10, pady=10, sticky="nsew")
 
-def modificar(padre: CTkToplevel, tabla:ttk.Treeview):
+def modificar(padre: CTkToplevel, tabla:ttk.Treeview, label:CTkLabel):
     def enviar(tabla, id):
         est = {
             "idEstudiante": int(id),
@@ -70,7 +70,7 @@ def modificar(padre: CTkToplevel, tabla:ttk.Treeview):
         }
         modifyEstudiante(id, est)
         try:
-            actualizarVista(tabla)
+            actualizarVista(tabla, label)
         except:
             print("Error actualizando")
         print("Si se modifico")
@@ -171,11 +171,18 @@ def actualizarVista(tabla:ttk.Treeview, label: CTkLabel):
         # Si coincide el ID, guardar ese item para volver a enfocarlo
         if str(dato["idEstudiante"]) == str(id_seleccionado):
             nuevo_focus = fila_id
+        
         # Restaurar el enfoque y selección
-    if nuevo_focus:
-        tabla.focus(nuevo_focus)
-        tabla.selection_set(nuevo_focus)
-        tabla.see(nuevo_focus)
+    try:
+        if nuevo_focus:
+            tabla.focus(nuevo_focus)
+            tabla.selection_set(nuevo_focus)
+            tabla.see(nuevo_focus)
+    
+    except:
+        print("Continuemos")
+
+
 
 def actualizarInfo(event, label):
     print("Hola")
@@ -197,9 +204,9 @@ def desplegarEstudiantes(padre: CTk):
 
         labelInfo = CTkLabel(frameInfo, text="Aqui ira info", wraplength=250)
         titulo = CTkLabel(frameTitulo, text="Modulo Estudiantes", font=("Arial", 15, "bold"))
-        btnCrear = CTkButton(frameBotones, text="Crear estudiante", command=lambda:crear(ventana, tabla))
-        btnModificar = CTkButton(frameBotones, text="Modificar estudiante", command=lambda:modificar(ventana, tabla))
-        btnInhabilitar = CTkButton(frameBotones, text="Inhabilitar estudiante", command=lambda:(inhabilitar(tabla), actualizarVista(tabla, labelInfo)))
+        btnCrear = CTkButton(frameBotones, text="Crear estudiante", command=lambda:crear(ventana, tabla, labelInfo))
+        btnModificar = CTkButton(frameBotones, text="Modificar estudiante", command=lambda:modificar(ventana, tabla, labelInfo))
+        btnInhabilitar = CTkButton(frameBotones, text="Inhabilitar estudiante", command=lambda:(inhabilitar(tabla), labelInfo, actualizarVista(tabla, labelInfo)))
         btnActualizar = CTkButton(frameBotones, text="Actualizar vista", command=lambda:actualizarVista(tabla, labelInfo))
         
 
