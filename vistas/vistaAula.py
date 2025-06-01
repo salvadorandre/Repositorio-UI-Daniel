@@ -4,6 +4,7 @@ from tkinter import messagebox
 from servicios.aulaService import *
 from servicios.cursoService import *
 from servicios.profesorService import *
+from PIL import Image
 
 colorBase = "red"
     
@@ -176,6 +177,18 @@ def actualizarVista(tabla:ttk.Treeview, label:CTkLabel):
         print("Continuemos")
 
 def desplegarAulas(padre: CTkFrame):
+
+    imagenCrear = Image.open("assets/archivo-de-edicion.png")
+    imagenModificar = Image.open("assets/pinza-para-boligrafo.png")
+    imagenEliminar = Image.open("assets/basura.png")
+    imagenActualizar = Image.open("assets/actualizar.png")
+
+    icono1 = CTkImage(dark_image=imagenCrear, size=(20, 20))
+    icono2 = CTkImage(dark_image=imagenModificar, size=(20, 20))
+    icono3 = CTkImage(dark_image=imagenEliminar, size=(20, 20))
+    icono4 = CTkImage(dark_image=imagenActualizar, size=(20, 20))
+
+
     ventana = CTkFrame(padre)
     ventana.rowconfigure(0, weight=1)
     ventana.columnconfigure(1, weight=1)
@@ -187,10 +200,10 @@ def desplegarAulas(padre: CTkFrame):
 
     labelInfo = CTkLabel(frameInfo, text="Aqui ira info", wraplength=250)
     titulo = CTkLabel(frameTitulo, text="Modulo Aulas", font=("Arial", 15, "bold"))
-    btnCrear = CTkButton(frameBotones, text="Crear Aula", command=lambda:crear(ventana, tabla, labelInfo))
-    btnModificar = CTkButton(frameBotones, text="Modificar Aula", command=lambda:modificar(ventana, tabla, labelInfo))
-    btnInhabilitar = CTkButton(frameBotones, text="Inhabilitar Aula", command=lambda:(inhabilitar(tabla), actualizarVista(tabla, labelInfo)))
-    btnActualizar = CTkButton(frameBotones, text="Actualizar vista", command=lambda:actualizarVista(tabla, labelInfo))
+    btnCrear = CTkButton(frameBotones, text="", image=icono1, compound="left", command=lambda:crear(ventana, tabla, labelInfo))
+    btnModificar = CTkButton(frameBotones, text="", image=icono2, compound="left", command=lambda:modificar(ventana, tabla, labelInfo))
+    btnInhabilitar = CTkButton(frameBotones, text="", image=icono3, compound="left", command=lambda:(inhabilitar(tabla), actualizarVista(tabla, labelInfo)))
+    btnActualizar = CTkButton(frameBotones, text="", image=icono4, compound="left", command=lambda:actualizarVista(tabla, labelInfo))
 
     columnas = ["idAula", "Curso", "Profesor"]
 

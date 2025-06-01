@@ -2,6 +2,7 @@ from customtkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 from servicios.cursoService import *
+from PIL import Image
     
 def crear(padre: CTkFrame, tabla:ttk.Treeview):
     def enviar(tabla):
@@ -103,6 +104,18 @@ def actualizarVista(tabla:ttk.Treeview):
         print("Continuemos")
 
 def desplegarCursos(padre: CTkFrame):
+
+    imagenCrear = Image.open("assets/archivo-de-edicion.png")
+    imagenModificar = Image.open("assets/pinza-para-boligrafo.png")
+    imagenEliminar = Image.open("assets/basura.png")
+    imagenActualizar = Image.open("assets/actualizar.png")
+
+    icono1 = CTkImage(dark_image=imagenCrear, size=(20, 20))
+    icono2 = CTkImage(dark_image=imagenModificar, size=(20, 20))
+    icono3 = CTkImage(dark_image=imagenEliminar, size=(20, 20))
+    icono4 = CTkImage(dark_image=imagenActualizar, size=(20, 20))
+
+
     ventana = CTkFrame(padre)
     ventana.rowconfigure(0, weight=1)
     ventana.columnconfigure(1, weight=1)
@@ -113,10 +126,10 @@ def desplegarCursos(padre: CTkFrame):
     frameTabla = CTkFrame(ventana)
 
     titulo = CTkLabel(frameTitulo, text="Modulo Cursos", font=("Arial", 15, "bold"))
-    btnCrear = CTkButton(frameBotones, text="Crear Curso", command=lambda:crear(ventana, tabla))
-    btnModificar = CTkButton(frameBotones, text="Modificar Curso", command=lambda:modificar(ventana, tabla))
-    btnInhabilitar = CTkButton(frameBotones, text="Inhabilitar Curso", command=lambda:(inhabilitar(tabla), actualizarVista(tabla)))
-    btnActualizar = CTkButton(frameBotones, text="Actualizar vista", command=lambda:actualizarVista(tabla))
+    btnCrear = CTkButton(frameBotones, text="", image=icono1, compound="left", command=lambda:crear(ventana, tabla))
+    btnModificar = CTkButton(frameBotones, text="", image=icono2, compound="left", command=lambda:modificar(ventana, tabla))
+    btnInhabilitar = CTkButton(frameBotones, text="", image=icono3, compound="left",command=lambda:(inhabilitar(tabla), actualizarVista(tabla)))
+    btnActualizar = CTkButton(frameBotones, text="",image=icono4, compound="left", command=lambda:actualizarVista(tabla))
 
     columnas = ["idCurso", "nombre", "estado"]
 
