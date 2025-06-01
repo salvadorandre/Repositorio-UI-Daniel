@@ -24,10 +24,12 @@ def limpiarFrame():
         widget.destroy()
 
 def asignarProfesor():
-    desplegarAulas(app)
+    limpiarFrame()
+    desplegarAulas(frameTabla)
 
 def asignarEstudiantes():
-    desplegarAsignaciones(app)
+    limpiarFrame()
+    desplegarAsignaciones(frameTabla)
 
 
 app = CTk()
@@ -51,7 +53,7 @@ btnAsignacionProf = CTkButton(app, text="Asignar Aulas", command=asignarProfesor
 btnReportes = CTkButton(app, text="Generar reportes", command=lambda:desplegarReportes(app))
 
 
-titulo.grid(row = 0, column = 0, padx = 10, pady = 10, sticky = "nsew")
+titulo.grid(row = 0, column = 0, padx = 10, pady = 10)
 listaEstudiantes.grid(row = 2, column = 0, padx = 10, pady = 10, sticky = "nsew")
 boton.grid(row = 3, column = 0, padx = 10, pady = 10, sticky = "nsew")
 

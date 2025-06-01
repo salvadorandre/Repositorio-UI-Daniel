@@ -4,7 +4,7 @@ from tkinter import messagebox
 from servicios.estudianteService import *
 
     
-def crear(padre: CTkToplevel, tabla:ttk.Treeview, label:CTkLabel):
+def crear(padre: CTkFrame, tabla:ttk.Treeview, label:CTkLabel):
     def enviar(tabla):
         est = {
             "nombre": campoNombre.get(),
@@ -50,7 +50,7 @@ def crear(padre: CTkToplevel, tabla:ttk.Treeview, label:CTkLabel):
 
     CTkButton(formCrear, text="Aceptar", command=lambda:(enviar(tabla), formCrear.destroy())).grid(row=5, column=0, columnspan=2, padx=10, pady=10, sticky="nsew")
 
-def modificar(padre: CTkToplevel, tabla:ttk.Treeview, label:CTkLabel):
+def modificar(padre: CTkFrame, tabla:ttk.Treeview, label:CTkLabel):
     def enviar(tabla, id):
         est = {
             "idEstudiante": int(id),
@@ -174,8 +174,6 @@ def actualizarVista(tabla:ttk.Treeview, label: CTkLabel):
     
     except:
         print("Continuemos")
-
-
 
 def desplegarEstudiantes(padre: CTkFrame):
     ventana = CTkFrame(padre)
