@@ -52,7 +52,10 @@ app.columnconfigure(1, weight=1)
 frameTabla = CTkFrame(app)
 
 img = Image.open("assets/logo.png")
+imgReportes = Image.open("assets/informe-de-negocios.png")
+
 imagen = CTkImage(dark_image = img, size=(200, 150))
+imagenReportes = CTkImage(dark_image=imgReportes, size=(30, 30))
 labelImagen = CTkLabel(app, image= imagen, text = "")
 
 titulo = CTkLabel(app, text="Gestion de Escuela", font=("Arial", 25, "bold"))
@@ -61,7 +64,7 @@ listaEstudiantes = CTkComboBox(app, values=("Estudiantes", "Profesores", "Cursos
 
 btnAsignacionEst = CTkButton(app, text="Asignar Estudiantes", command=asignarEstudiantes)
 btnAsignacionProf = CTkButton(app, text="Asignar Aulas", command=asignarProfesor)
-btnReportes = CTkButton(app, text="Generar reportes", command=lambda:desplegarReportes(app))
+btnReportes = CTkButton(app, text="Reportes",image=imagenReportes, compound="left", command=lambda:desplegarReportes(app))
 
 switchApariencia = CTkSwitch(app, text="Modo oscuro",command=cambiarTema)
 

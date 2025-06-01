@@ -20,7 +20,7 @@ def crear(padre: CTkFrame, tabla:ttk.Treeview, label:CTkLabel):
             actualizarVista(tabla, label)
         except:
             print("Error actualizando")
-        print("Si salio")
+        messagebox.showinfo("Agregado", "Estudiante agregado exitosamente")
 
     formCrear = CTkToplevel(padre)
     formCrear.title("Crear estudiante")
@@ -67,7 +67,7 @@ def modificar(padre: CTkFrame, tabla:ttk.Treeview, label:CTkLabel):
             actualizarVista(tabla, label)
         except:
             print("Error actualizando")
-        print("Si se modifico")
+        messagebox.showinfo("Agregado", "Estudiante modificado exitosamente")
 
     #Obtener el id
     seleccion = tabla.selection()
@@ -109,9 +109,9 @@ def inhabilitar(tabla:ttk.Treeview):
     id = valores[0]
     
     if unableEstudiante(id) == 200:
-        print("Si se pudo")
+        messagebox.showinfo("Eliminado", "Estudiante modificado exitosamente")
     else:
-        print("no se pudo")
+        messagebox.showwarning("Error", "No se pudo eliminar nada")
 
 def actualizarVista(tabla:ttk.Treeview, label: CTkLabel, buscar = None):
 
