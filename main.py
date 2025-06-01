@@ -6,7 +6,7 @@ from vistas.vistaAula import desplegarAulas
 from vistas.vistaAsignaciones import desplegarAsignaciones
 from vistas.vistaReportes import desplegarReportes
 
-set_default_color_theme("green")
+set_default_color_theme("blue")
 
 def ver(opcion):
     valor = opcion
@@ -41,7 +41,7 @@ def cambiarTema():
 
 app = CTk()
 app.title("Sistema de Gestion educativa")
-
+app.resizable(width=False, height=False)
 
 app.rowconfigure(0, weight=1)
 app.columnconfigure(1, weight=1)
