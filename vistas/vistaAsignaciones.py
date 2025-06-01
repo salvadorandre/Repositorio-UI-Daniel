@@ -130,7 +130,14 @@ def inhabilitar(tabla:ttk.Treeview):
     else:
         messagebox.showwarning("Error", "No se pudo eliminar nada")
 
-def actualizarVista(tabla:ttk.Treeview):
+def actualizarVista(tabla:ttk.Treeview, buscar = None):
+
+    try:
+        filtro = buscar.get()
+    except:
+        filtro = ""
+
+
     seleccion = tabla.focus()
     id_seleccionado = None
 
@@ -151,13 +158,14 @@ def actualizarVista(tabla:ttk.Treeview):
     nuevo_focus = None
 
     for dato in datos:
-        fila_id = tabla.insert("", "end", values=(
-            dato["idAsignacion"], 
-            dato["fecha"], 
-            dato["estudiante"]["nombre"],
-            dato["curso"]["nombre"],
-            dato["profesor"]["nombre"]
-        ))
+        if(filtro.lower() == str(dato["idAsignacion"]).lower()) or (filtro.lower() in str(dato["fecha"]).lower()) or (filtro.lower() in str(dato["estudiante"]["nombre"]).lower()) or (filtro.lower() in str(dato["curso"]["nombre"]).lower()) or (filtro.lower() in str(dato["profesor"]["nombre"]).lower()):
+            fila_id = tabla.insert("", "end", values=(
+                dato["idAsignacion"], 
+                dato["fecha"], 
+                dato["estudiante"]["nombre"],
+                dato["curso"]["nombre"],
+                dato["profesor"]["nombre"]
+            ))
         if id_seleccionado is not None and dato["idAsignacion"] == id_seleccionado:
             nuevo_focus = fila_id
 
@@ -192,7 +200,12 @@ def desplegarAsignaciones(padre: CTkFrame):
     frameBotones = CTkFrame(ventana)
     frameTabla = CTkFrame(ventana)
 
-    titulo = CTkLabel(frameTitulo, text="Modulo asignaciones", font=("Arial", 15, "bold"))
+    #Buscador
+    buscador = CTkEntry(frameTitulo, width=300)
+    botonBuscar = CTkButton(frameTitulo, text="Buscar", command=lambda:actualizarVista(tabla, buscador))
+
+
+    titulo = CTkLabel(frameTitulo, text="Modulo asignaciones", font=("Arial", 15, "bold"), text_color="white")
     btnCrear = CTkButton(frameBotones, text="", image=icono1, compound="left", command=lambda:crear(ventana, tabla))
     btnModificar = CTkButton(frameBotones, text="", image=icono2, compound="left", command=lambda:modificar(ventana, tabla))
     btnInhabilitar = CTkButton(frameBotones, text="", image=icono3, compound="left", command=lambda:(inhabilitar(tabla), actualizarVista(tabla)))
@@ -218,6 +231,10 @@ def desplegarAsignaciones(padre: CTkFrame):
 
     #Organizacion de botones y tabla
     titulo.grid(column = 0, row=0, sticky="nsew", padx=10, pady=10)
+
+    buscador.grid(column = 1, row = 0, sticky ="ew", pady = 10, padx = 10)
+    botonBuscar.grid(column = 2, row= 0, sticky = "ew", pady = 10, padx = 10)
+    
     btnCrear.grid(column = 0, row = 0, sticky="nsew", padx=10, pady=10)
     btnModificar.grid(column = 0, row = 1, sticky="nsew", padx=10, pady=10)
     btnInhabilitar.grid(column = 0, row =2, sticky="nsew", padx=10, pady=10)

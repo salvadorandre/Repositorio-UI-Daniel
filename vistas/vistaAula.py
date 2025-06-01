@@ -127,11 +127,16 @@ def inhabilitar(tabla:ttk.Treeview):
     else:
         messagebox.showwarning("Error", "No se pudo eliminar nada")
 
-def actualizarVista(tabla:ttk.Treeview, label:CTkLabel):
+def actualizarVista(tabla:ttk.Treeview, label:CTkLabel, buscar = None):
+
+    try:
+        filtro = buscar.get()
+    except:
+        filtro = ""
+
+
     seleccion = tabla.focus()
     id_seleccionado = None
-
-
 
     if seleccion:
         valores = tabla.item(seleccion, "values")
@@ -158,12 +163,14 @@ def actualizarVista(tabla:ttk.Treeview, label:CTkLabel):
     nuevo_focus = None
 
     for dato in datos:
-        fila_id = tabla.insert("", "end", values=(
-            dato["idProfesorCurso"], 
-            dato["curso"]["nombre"], 
-            dato["profesor"]["nombre"],
-            dato["estado"]
-        ))
+
+        if (filtro.lower() in str(dato["idProfesorCurso"]).lower()) or (filtro.lower() in str(dato["curso"]["nombre"]).lower()) or (filtro.lower() in str(dato["profesor"]["nombre"]).lower()):
+            fila_id = tabla.insert("", "end", values=(
+                dato["idProfesorCurso"], 
+                dato["curso"]["nombre"], 
+                dato["profesor"]["nombre"],
+                dato["estado"]
+            ))
         if id_seleccionado is not None and dato["idProfesorCurso"] == id_seleccionado:
             nuevo_focus = fila_id
 
@@ -199,7 +206,7 @@ def desplegarAulas(padre: CTkFrame):
     frameInfo = CTkScrollableFrame(ventana)
 
     labelInfo = CTkLabel(frameInfo, text="Aqui ira info", wraplength=250)
-    titulo = CTkLabel(frameTitulo, text="Modulo Aulas", font=("Arial", 15, "bold"))
+    titulo = CTkLabel(frameTitulo, text="Modulo Aulas", font=("Arial", 15, "bold"), text_color="white")
     btnCrear = CTkButton(frameBotones, text="", image=icono1, compound="left", command=lambda:crear(ventana, tabla, labelInfo))
     btnModificar = CTkButton(frameBotones, text="", image=icono2, compound="left", command=lambda:modificar(ventana, tabla, labelInfo))
     btnInhabilitar = CTkButton(frameBotones, text="", image=icono3, compound="left", command=lambda:(inhabilitar(tabla), actualizarVista(tabla, labelInfo)))
@@ -224,8 +231,17 @@ def desplegarAulas(padre: CTkFrame):
     frameTabla.grid(column=1, row=1, pady = 10, padx = 10, sticky = "nsew")
     frameInfo.grid(column =2, row=0, rowspan = 2, pady = 10, padx =10, sticky = "nsew")
 
+    #Buscador
+    buscador = CTkEntry(frameTitulo, width=300)
+    botonBuscar = CTkButton(frameTitulo, text="Buscar", command=lambda:actualizarVista(tabla, labelInfo, buscador))
+
+
     #Organizacion de botones y tabla
     titulo.grid(column = 0, row=0, sticky="nsew", padx=10, pady=10)
+
+    buscador.grid(column = 1, row = 0, sticky ="ew", pady = 10, padx = 10)
+    botonBuscar.grid(column = 2, row= 0, sticky = "ew", pady = 10, padx = 10)
+
     btnCrear.grid(column = 0, row = 0, sticky="nsew", padx=10, pady=10)
     btnModificar.grid(column = 0, row = 1, sticky="nsew", padx=10, pady=10)
     btnInhabilitar.grid(column = 0, row =2, sticky="nsew", padx=10, pady=10)

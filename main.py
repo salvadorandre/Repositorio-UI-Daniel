@@ -5,8 +5,10 @@ from vistas.vistaCurso import desplegarCursos
 from vistas.vistaAula import desplegarAulas
 from vistas.vistaAsignaciones import desplegarAsignaciones
 from vistas.vistaReportes import desplegarReportes
+from PIL import Image
 
 set_default_color_theme("blue")
+set_appearance_mode("light")
 
 def ver(opcion):
     valor = opcion
@@ -49,6 +51,10 @@ app.columnconfigure(1, weight=1)
 
 frameTabla = CTkFrame(app)
 
+img = Image.open("assets/logo.png")
+imagen = CTkImage(dark_image = img, size=(200, 150))
+labelImagen = CTkLabel(app, image= imagen, text = "")
+
 titulo = CTkLabel(app, text="Gestion de Escuela", font=("Arial", 25, "bold"))
 
 listaEstudiantes = CTkComboBox(app, values=("Estudiantes", "Profesores", "Cursos"), command=ver)
@@ -60,7 +66,9 @@ btnReportes = CTkButton(app, text="Generar reportes", command=lambda:desplegarRe
 switchApariencia = CTkSwitch(app, text="Modo oscuro",command=cambiarTema)
 
 
-titulo.grid(row = 0, column = 0, padx = 10, pady = 10)
+labelImagen.grid(row = 0, column = 0,padx = 10, pady = 10)
+titulo.grid(row = 1, column = 0, padx = 10, pady = 10)
+
 listaEstudiantes.grid(row = 2, column = 0, padx = 10, pady = 10, sticky = "nsew")
 
 btnAsignacionEst.grid(row = 4, column = 0, padx = 10, pady = 10, sticky = "nsew" )

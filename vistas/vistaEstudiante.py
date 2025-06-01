@@ -157,7 +157,7 @@ def actualizarVista(tabla:ttk.Treeview, label: CTkLabel, buscar = None):
 
     datos = getEstudiantes()
     for dato in datos:
-        if (filtro.lower() in str(dato["nombre"]).lower()) or (filtro.lower() in str(dato["apellido"]).lower()) or (filtro.lower() in str(dato["grado"]).lower()):
+        if (filtro.lower() in str(dato["nombre"]).lower()) or (filtro.lower() in str(dato["apellido"]).lower()) or (filtro.lower() in str(dato["grado"]).lower()) or (int(filtro) == int(dato["edad"])) or (int(filtro) == int(dato["promedio"])) or (int(filtro) == int(dato["idEstudiante"])):
             fila_id = tabla.insert("", "end", values=(
                 dato["idEstudiante"], 
                 dato["nombre"], 
@@ -208,7 +208,7 @@ def desplegarEstudiantes(padre: CTkFrame):
     botonBuscar = CTkButton(frameTitulo, text="Buscar", command=lambda:actualizarVista(tabla, labelInfo, buscador))
 
     labelInfo = CTkLabel(frameInfo, text="Aqui ira info", wraplength=250)
-    titulo = CTkLabel(frameTitulo, text="Modulo Estudiantes", font=("Arial", 15, "bold"))
+    titulo = CTkLabel(frameTitulo, text="Modulo Estudiantes", font=("Arial", 15, "bold"), text_color="white")
     btnCrear = CTkButton(frameBotones, text="", image=icono1, compound="left",command=lambda:crear(ventana, tabla, labelInfo))
     btnModificar = CTkButton(frameBotones, text="", image=icono2, compound="left", command=lambda:modificar(ventana, tabla, labelInfo))
     btnInhabilitar = CTkButton(frameBotones, text="", image=icono3, compound="left", command=lambda:(inhabilitar(tabla), labelInfo, actualizarVista(tabla, labelInfo)))
