@@ -157,7 +157,7 @@ def actualizarVista(tabla:ttk.Treeview, label: CTkLabel, buscar = None):
 
     datos = getEstudiantes()
     for dato in datos:
-        if (filtro.lower() in str(dato["nombre"]).lower()) or (filtro.lower() in str(dato["apellido"]).lower()) or (filtro.lower() in str(dato["grado"]).lower()) or (int(filtro) == int(dato["edad"])) or (int(filtro) == int(dato["promedio"])) or (int(filtro) == int(dato["idEstudiante"])):
+        if (filtro.lower() in str(dato["nombre"]).lower()) or (filtro.lower() in str(dato["apellido"]).lower()) or (filtro.lower() in str(dato["grado"]).lower()) or (filtro.lower() == str(dato["edad"]).lower()) or (filtro.lower() == str(dato["promedio"]).lower()) or (filtro.lower() == str(dato["idEstudiante"]).lower()):
             fila_id = tabla.insert("", "end", values=(
                 dato["idEstudiante"], 
                 dato["nombre"], 
