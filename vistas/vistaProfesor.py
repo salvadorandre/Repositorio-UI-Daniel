@@ -189,7 +189,7 @@ def desplegarProfesores(padre: CTk):
         tabla = ttk.Treeview(frameTabla, columns= columnas, show="headings")
         for col in columnas:
             tabla.heading(col, text=col)
-            tabla.column(col, width=100, anchor="center")  # Ancho y alineación
+            tabla.column(col, width=120, anchor="center")  # Ancho y alineación
 
 
         #Configuracion de scrolls
