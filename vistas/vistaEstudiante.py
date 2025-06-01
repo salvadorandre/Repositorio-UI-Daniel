@@ -109,7 +109,7 @@ def modificar(padre: CTkToplevel, tabla:ttk.Treeview, label:CTkLabel):
 
     CTkButton(formModificar, text="Aceptar", command=lambda:(enviar(tabla, id), formModificar.destroy())).grid(row=5, column=0, columnspan=2, padx=10, pady=10, sticky="nsew")
 
-def inhabilitar(tabla:ttk.Treeview, label:CTkLabel):
+def inhabilitar(tabla:ttk.Treeview):
     seleccion = tabla.selection()
     valores = tabla.item(seleccion, "values")
     id = valores[0]
