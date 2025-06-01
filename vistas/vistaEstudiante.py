@@ -113,7 +113,12 @@ def inhabilitar(tabla:ttk.Treeview):
     else:
         print("no se pudo")
 
-def actualizarVista(tabla:ttk.Treeview, label: CTkLabel):
+def actualizarVista(tabla:ttk.Treeview, label: CTkLabel, buscar = None):
+
+    try:
+        filtro = buscar.get()
+    except:
+        filtro = ""
 
     # Guardar el ID del estudiante seleccionado
     seleccion = tabla.focus()
@@ -145,23 +150,23 @@ def actualizarVista(tabla:ttk.Treeview, label: CTkLabel):
             label.configure(text="No hay asignaciones disponibles")
     except:
         label.configure(text="Sin info, actualice por favor")
-
-
-
-        
+     
 
     for item in tabla.get_children():
         tabla.delete(item)
 
     datos = getEstudiantes()
     for dato in datos:
-        fila_id = tabla.insert("", "end", values=(dato["idEstudiante"], 
-                                        dato["nombre"], 
-                                        dato["apellido"], 
-                                        dato["promedio"],
-                                        dato["edad"],
-                                        dato["grado"],
-                                        dato["estado"]))
+        if (filtro.lower() in str(dato["nombre"]).lower()) or (filtro.lower() in str(dato["apellido"]).lower()) or (filtro.lower() in str(dato["grado"]).lower()):
+            fila_id = tabla.insert("", "end", values=(
+                dato["idEstudiante"], 
+                dato["nombre"], 
+                dato["apellido"], 
+                dato["promedio"],
+                dato["edad"],
+                dato["grado"],
+                dato["estado"]
+        ))
         # Si coincide el ID, guardar ese item para volver a enfocarlo
         if str(dato["idEstudiante"]) == str(id_seleccionado):
             nuevo_focus = fila_id
@@ -198,6 +203,10 @@ def desplegarEstudiantes(padre: CTkFrame):
     frameTabla = CTkFrame(ventana)
     frameInfo = CTkScrollableFrame(ventana)
 
+    #Buscador
+    buscador = CTkEntry(frameTitulo, width=300)
+    botonBuscar = CTkButton(frameTitulo, text="Buscar", command=lambda:actualizarVista(tabla, labelInfo, buscador))
+
     labelInfo = CTkLabel(frameInfo, text="Aqui ira info", wraplength=250)
     titulo = CTkLabel(frameTitulo, text="Modulo Estudiantes", font=("Arial", 15, "bold"))
     btnCrear = CTkButton(frameBotones, text="", image=icono1, compound="left",command=lambda:crear(ventana, tabla, labelInfo))
@@ -227,6 +236,10 @@ def desplegarEstudiantes(padre: CTkFrame):
 
     #Organizacion de botones y tabla
     titulo.grid(column = 0, row=0, sticky="nsew", padx=10, pady=10)
+
+    buscador.grid(column = 1, row = 0, sticky ="ew", pady = 10, padx = 10)
+    botonBuscar.grid(column = 2, row= 0, sticky = "ew", pady = 10, padx = 10)
+
     btnCrear.grid(column = 0, row = 0, sticky="nsew", padx=10, pady=10)
     btnModificar.grid(column = 0, row = 1, sticky="nsew", padx=10, pady=10)
     btnInhabilitar.grid(column = 0, row =2, sticky="nsew", padx=10, pady=10)
